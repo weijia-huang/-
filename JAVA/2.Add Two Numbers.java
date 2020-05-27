@@ -1,0 +1,43 @@
+/*
+题目描述：
+给出两个 非空 的链表用来表示两个非负的整数。其中，它们各自的位数是按照 逆序 的方式存储的，并且它们的每个节点只能存储 一位 8数字。
+如果，我们将这两个数相加起来，则会返回一个新的链表来表示它们的和。
+您可以假设除了数字 0 之外，这两个数都不会以 0 开头。
+
+示例：
+输入：(2 -> 4 -> 3) + (5 -> 6 -> 4)
+输出：7 -> 0 -> 8
+原因：342 + 465 = 807
+*/
+
+/*
+注意点：
+1.两个数字的长度可能不相等
+2.考虑进位
+*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode head = new ListNode(0);
+        ListNode p = head;
+        int c = 0;
+        int cur = 0;
+        while(l1 != null || l2 != null || c == 1){
+            cur = (l1 == null? 0 : l1.val) + (l2 == null ? 0 : l2.val) + c;
+            c = cur / 10;
+            p.next = new ListNode(cur % 10);
+            p = p.next;
+            l1 = l1 == null ? null : l1.next;
+            l2 = l2 == null ? null : l2.next;
+        }
+        return head.next;
+    }
+}
