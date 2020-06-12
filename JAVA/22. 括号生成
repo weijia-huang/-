@@ -1,0 +1,77 @@
+/*
+数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。 
+
+示例：
+输入：n = 3
+输出：[
+       "((()))",
+       "(()())",
+       "(())()",
+       "()(())",
+       "()()()"
+     ]
+*/
+
+/*
+这里给出两种解法
+解法一
+思路：dfs。利用pre数组存放每一个')'之前'('的个数，利用pre[i]必定>i并且>=pre[i-1]的性质搜索每一个解。
+时间复杂度:O(m) ｜这里的m是解的个数。 ｜由于从pre数组转化成字符串的时间消耗较大，故该方法比下面两个方法时间消耗大
+空间复杂度:O(n)
+*/
+
+class Solution {
+    public List<String> generateParenthesis(int n) {
+        int[] pre = new int[n];//存放第i个')'前面有多少个'('
+        Arrays.fill(pre, n);
+        List<String> res = new ArrayList<>();
+        dfs(res, pre, n, 0);
+        return res;
+    }
+    public void dfs(List<String> res, int[] pre, int n, int index){
+        if(index == pre.length - 1){
+            res.add(preToString(pre));
+            return;
+        }
+        while(pre[index] > index && (index == 0 || pre[index] >= pre[index - 1])){
+            dfs(res, pre, n, index + 1);
+            pre[index]--;
+        }
+        pre[index] = n;
+    }
+
+    //根据pre数组生成字符串
+    public String preToString(int[] pre){
+        String res = "";
+        int nums = 0;//已有'('的个数
+        for(int i = 0; i < pre.length; i++){
+            res += String.join("", Collections.nCopies(pre[i] - nums, "(")) + ")";
+            nums = pre[i];
+        }
+        return res;
+    }
+}
+
+/*
+解法二：同样使用dfs，这里使用参数numsL和numsR来标记已有字符串中两个字符的个数。由于每次解无需重新生成字符串，故时间消耗比解法一小
+复杂度同解法一
+*/
+class Solution {
+    public List<String> generateParenthesis(int n) {
+        List<String> res = new ArrayList<>();
+        dfs(res, "", 0, 0, n);
+        return res;
+    }
+    public void dfs(List<String> res, String s, int numsL, int numsR, int n){
+        if(numsR == n){
+            res.add(s);
+            return;
+        }
+       if(numsL < n){
+           dfs(res, s + "(", numsL + 1, numsR, n);
+       }
+       if(numsL > numsR){
+           dfs(res, s + ")", numsL, numsR + 1, n);
+       }
+    }
+}
