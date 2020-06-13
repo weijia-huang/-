@@ -32,7 +32,7 @@
 
 class Solution {
    	    public void nextPermutation(int[] nums) {
-          int i = nums.length - 1;
+          	int i = nums.length - 1;
 	        for(; i > 0; i--){
 	            //nums[i:]为逆序数组,找到最小的i
 	            if(nums[i] > nums[i - 1]){
