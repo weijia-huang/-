@@ -1,0 +1,89 @@
+/*
+题目描述：
+给定一个字符串数组，将字母异位词组合在一起。字母异位词指字母相同，但排列不同的字符串。
+
+示例:
+输入: ["eat", "tea", "tan", "ate", "nat", "bat"]
+输出:
+[
+  ["ate","eat","tea"],
+  ["nat","tan"],
+  ["bat"]
+]
+*/
+
+/*
+思路：将字符串映射到哈希表里，key是字符串的字母，value是字符串中字母key的个数。比较两个字符串的哈希表是否相等即可知道是否为字母异位词
+优化：
+1.因为最多就26个字母，所以可以用count数组来当哈希表.
+2.在存储和比较时可使用count数组的字符串格式
+*/
+
+//初始代码
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        List<List<String>> res = new ArrayList<>();
+        List<Map<Character, Integer>> maps = new ArrayList<>();
+        for(String str: strs){
+            Map<Character, Integer> curMap = strToMap(str);
+            int i = 0;
+            for(; i < maps.size(); i++){
+                if(equals(maps.get(i), curMap)){
+                    res.get(i).add(str);
+                    break;
+                }
+            }
+            if(i == maps.size()){
+                maps.add(curMap);
+                res.add(new ArrayList<String>(){{add(str);}});
+            }
+        }
+        return res;
+    }
+
+    public boolean equals(Map<Character, Integer> map1, Map<Character, Integer> map2){
+        if(map1.size() == map2.size()){
+            for(Character key: map1.keySet()){
+                if(!(map2.containsKey(key) && map1.get(key) == map2.get(key))){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public Map<Character, Integer> strToMap(String str){
+        Map<Character, Integer> map = new HashMap<>();
+        map.put('0', str.length());
+        for(int i = 0; i < str.length(); i++){
+            Character c = str.charAt(i);
+            if(map.containsKey(c)){
+                map.put(c, map.get(c) + 1);
+            }else{
+                map.put(c, 1);
+            }
+        }
+        return map;
+    }
+}
+
+//优化后
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List> res = new HashMap<>();
+        int[] cnt = new int[26];
+        for(String str: strs){
+            Arrays.fill(cnt, 0);
+            for(int i = 0; i < str.length(); i++){
+                cnt[str.charAt(i) - 'a']++;
+            }
+            String cntStr = Arrays.toString(cnt);
+            if(!res.containsKey(cntStr)){
+                res.put(cntStr, new ArrayList());
+            }
+            res.get(cntStr).add(str);
+        }
+        return new ArrayList(res.values());
+    }
+}
