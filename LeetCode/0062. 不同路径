@@ -1,0 +1,69 @@
+/*
+题目描述:
+一个机器人位于一个 m x n 网格的左上角 
+机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角
+问总共有多少条不同的路径？
+
+示例 1:
+输入: m = 3, n = 2
+输出: 3
+解释:
+从左上角开始，总共有 3 条路径可以到达右下角。
+1. 向右 -> 向右 -> 向下
+2. 向右 -> 向下 -> 向右
+3. 向下 -> 向右 -> 向右
+
+示例 2:
+输入: m = 7, n = 3
+输出: 28
+*/
+
+//本题两种解法
+/*解法一
+思路：由于只能向下或者向右移动，所以总步数一定是 m + n - 2 步，向下的步数一定是 m - 1 步。因此路径数量为C(m-1, m+n-2)。
+时间复杂度:O(min(m, n))
+空间复杂度:O(1)
+注意：直接使用阶乘可能会导致结果超出数据范围，故要进行处理
+*/
+
+class Solution {
+    public int uniquePaths(int m, int n) {
+        double res = 1, i = Math.max(m, n), j = 1;
+        while(i <= m + n - 2) res = res * i++ / j++;
+        return (int)res; 
+    }
+}
+
+/*解法二
+思路:动态规划,dp[m][n] = dp[m - 1] + dp[n - 1]。
+时间复杂度:O(m * n)
+空间复杂度:O(m * n) ｜ 优化后可达到O(n)
+*/
+
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int[][] dp = new int[m][n];
+        Arrays.fill(dp[0], 1);
+        for(int i = 1; i < m; i++) dp[i][0] = 1;
+        for(int i = 1; i < m; i++){
+            for(int j = 1; j < n; j++){
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+}
+
+//优化后
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int[] dp = new int[n];
+        Arrays.fill(dp, 1);
+        for(int i = 1; i < m; i++){
+            for(int j = 1; j < n; j++){
+                dp[j] += dp[j - 1];
+            }
+        }
+        return dp[n - 1];
+    }
+}
