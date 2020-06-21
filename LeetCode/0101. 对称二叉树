@@ -1,0 +1,107 @@
+/*
+题目描述：
+给定一个二叉树，检查它是否是镜像对称的。
+
+例如，二叉树 [1,2,2,3,4,4,3] 是对称的。
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+
+但是下面这个 [1,2,2,null,3,null,3] 则不是镜像对称的:
+    1
+   / \
+  2   2
+   \   \
+   3    3
+
+进阶：
+你可以运用递归和迭代两种方法解决这个问题吗？
+*/
+
+/*递归
+思路分析：每个树的左子树和对应树的右子树相等 
+时间复杂度:O(n)
+空间复杂度:O(n)
+*/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        if(root == null) return true;
+        return preSearch(root.left, root.right);
+    }
+
+    public boolean preSearch(TreeNode lRoot, TreeNode rRoot){
+        if(lRoot == null && rRoot == null) return true;
+        if(lRoot == null || rRoot == null) return false;
+        return lRoot.val == rRoot.val && preSearch(lRoot.left, rRoot.right) && preSearch(lRoot.right, rRoot.left);
+    }
+}
+
+/*迭代
+思路：用层次遍历的思想
+时间复杂度：O(n)
+空间复杂度：O(n)
+*/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        if(root == null) return true;
+        Queue<TreeNode> q1 = new LinkedList();
+        Queue<TreeNode> q2 = new LinkedList();
+        q1.offer(root.left);
+        q2.offer(root.right);
+        while(!q1.isEmpty() || !q2.isEmpty()){
+            TreeNode l = q1.poll();
+            TreeNode r = q2.poll();
+            if(l == null && r == null) continue;
+            if(l == null || r == null) return false;
+            if(l.val != r.val) return false;
+            q1.offer(l.left);
+            q1.offer(l.right);
+            q2.offer(r.right);
+            q2.offer(r.left);
+        }
+        return q1.isEmpty() && q2.isEmpty();
+    }
+}
+
+//一个队列的写法
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        if(root == null) return true;
+        Queue<TreeNode> q = new LinkedList();
+        q.offer(root.left);
+        q.offer(root.right);
+        while(!q.isEmpty()){
+            TreeNode l = q.poll();
+            TreeNode r = q.poll();
+            if(l == null && r == null) continue;
+            if(l == null || r == null || l.val != r.val) return false;
+            q.offer(l.left);
+            q.offer(r.right);
+            q.offer(l.right);
+            q.offer(r.left);
+        }
+        return true;
+    }
+}
