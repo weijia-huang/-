@@ -1,6 +1,7 @@
 /**
  * 用于解决骑士周游(马踏棋盘)问题：即从棋盘的某一点出发，每次按'日'字形走法，走过的点不重复走。如何走才能走遍棋盘？
  * 思路：使用dfs遍历所有可能性，使用贪心算法加快搜索速度
+ * 注：在travel(54行)中判断该点是否访问过，而不是在nextPoint(74行)中判断的原因--虽然遍历时该点未访问过，但是回溯时，该点可能已被访问
  */
 
 package com.demo.algorithm;
@@ -50,7 +51,7 @@ class ChessBoard {
 		List<Point> nextPoint = nextPoint(p);
 		nextPoint.sort((a, b) -> nextPoint(a).size() - nextPoint(b).size());
 		for(Point next: nextPoint) {
-			travel(next, step + 1);
+			if(chessBoard[next.x][next.y] == 0) travel(next, step + 1);
 		}
 		if(step < rows * cols && !finished) {
 			chessBoard[p.x][p.y] = 0;
@@ -70,7 +71,7 @@ class ChessBoard {
 				{ -1, -2 } };
 		for(int i = 0; i < dif.length; i++) {
 			int x1 = dif[i][0] + p.x, y1 = dif[i][1] + p.y;
-			if(x1 >= 0 && x1 < rows && y1 >= 0 && y1 < cols && chessBoard[x1][y1] == 0) {
+			if(x1 >= 0 && x1 < rows && y1 >= 0 && y1 < cols) {
 				nextPoint.add(new Point(x1, y1));
 			}
 		}
